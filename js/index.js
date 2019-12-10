@@ -33,18 +33,20 @@ class GoodsList {
     
     sumGoods() {
         let sum = 0;
-        this.goods.forEach(good => {
-            sum += good.price;
-        })
-        return sum;
-        
+        this.goods.forEach(
+            good => {
+            const goodsSum = new GoodsItem(good.price);
+            
+            if(isNaN(good.price)) {                
+            } else {
+                sum += good.price;
+            }
+        });
+        document.querySelector('.header-upper').innerHTML = `Сумма всех товаров: ${sum}`;
     }
 }
-class UserCart {
-    
-}
 
-const list = new GoodsList();
-list.fetchGoods();
-list.render();
-
+    const list = new GoodsList();
+    list.fetchGoods();
+    list.render();
+    list.sumGoods();
