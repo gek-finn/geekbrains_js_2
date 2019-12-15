@@ -1,4 +1,3 @@
-document.querySelector('.cart-button').addEventListener('click', () => {document.querySelector('.cart-block').classList.toggle('invisible');});
 
 class GoodsItem {
     constructor(title = 'Без имени', price = '150') {
@@ -33,18 +32,33 @@ class GoodsList {
     
     sumGoods() {
         let sum = 0;
-        this.goods.forEach(good => {
-            sum += good.price;
-        })
-        return sum;
-        
+        this.goods.forEach(
+            good => {
+            const goodsSum = new GoodsItem(good.price);
+            
+            if(isNaN(good.price)) {                
+            } else {
+                sum += good.price;
+            }
+        });
+        document.querySelector('.header-upper').innerHTML = `Сумма всех товаров: ${sum}`;
     }
 }
-class UserCart {
+
+    const list = new GoodsList();
+    list.fetchGoods();
+    list.render();
+    list.sumGoods();
+
+// Пустые классы для корзины согласно п.1 д/з
+
+//Класс для добавления новых элементов в корзине
+    class CartItem {
+              
+    }
+
+//Класс содержащий массив товаров с функцией подсчета товаров и суммы
+
+    class Cart {
     
-}
-
-const list = new GoodsList();
-list.fetchGoods();
-list.render();
-
+    }
