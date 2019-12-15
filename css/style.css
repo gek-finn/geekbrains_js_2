@@ -3,7 +3,7 @@ body {
 }
 
 .container {
-    width: 960px;
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -12,12 +12,14 @@ header {
     justify-content: space-between;
     background-color: lightgray;
     color: #fafafa;
-    padding: 30px 80px;
+    padding: 10px 20px;
 }
 
-header-upper {   
-    
+.header-upper { 
+    margin-top: 10px;
+    color: black;
 }
+
 
 .header-inner {
     position: relative;
@@ -27,9 +29,11 @@ button:focus {
     outline: none;
 }
 
+/*
 .cart{
    
 }
+*/
 
 .cart-block{
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.62);
@@ -84,7 +88,7 @@ button:focus {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding: 40px 80px;
+    padding: 0 20px;
 }
 
 .goods-item {
