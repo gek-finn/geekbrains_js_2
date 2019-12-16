@@ -1,3 +1,32 @@
+const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+function makeGETRequest(url) {
+    return new Promise((resolve, reject) => {
+        let xhr;
+        if (window.XMLHttpRequest) {
+            xhr = new window.XMLHttpRequest();
+        } else {
+            xhr = new window.ActiveXObject('Microsoft.XMLHTTP');
+        }
+
+         xhr.onreadystatechange=function(){
+            console.log(xhr.readyState);
+            console.log(xhr.status);
+            if (xhr.readyState === 4){
+                if (xhr.status === 200) {
+                    const body = JSON.parse(xhr.responseText);
+                    resolve(body);
+                } else{
+                    reject({error: xhr.status});
+                }
+            }
+        };
+        xhr.onerror=(err)=>{reject(err)};
+        xhr.open('GET', url);
+        xhr.send();        
+});
+}
+
+//Все товары на странице
 class GoodsItem {
      constructor(code = 0, title = 'Без имени', price = '', prodimg = "img/shirt.jpg") {
         this.code = code;
