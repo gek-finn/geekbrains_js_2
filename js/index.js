@@ -29,7 +29,7 @@ function makeGETRequest(url) {
 //Все товары на странице
 class GoodsItem {
      constructor(code = 0, title = 'Без имени', price = '', prodimg = "img/shirt.jpg") {
-        this.code = code;
+//         this.code = code;
         this.title = title;
         this.price = price;
         this.prodimg = prodimg;
