@@ -21,72 +21,47 @@ header {
 }
 
 
-.header-inner {
-    position: relative;
-}
-
 button:focus {
     outline: none;
 }
 
-
 .cart {
     position: relative;
-    padding: 5%;
-    background-color: white;
-    top: 10%;
-    left: 5%;
-    width: 80%;
-    border: 1px solid #999;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #77747954;
+    border-radius: 5px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
+.cart-item {
+    width: 150px;
+    background: #d3d3d3;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin: 0 0 10px 0;
+}
+
+.cart-button {
+    background-color: #7774799e;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: auto;
+    margin-bottom: 10px;
+}
 
 .cart-block {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.62);
-    border-radius: 5px;
-    box-sizing: border-box;
-    right: 20%;
-    top: 11%;
+    display: flex;
+    flex-direction: column;
     position: absolute;
-    background-color: white;
-    padding: 20px;
-    color: black;
-    width: 300px;
-}
-
-.hidden {
-    display: none;
-}
-
-.cart-table {
-    width: 100%;
-    text-align: center;
-}
-
-.cart-th {
-    padding: 5px;
-    width: calc(100% / 5);
-    overflow: hidden;
-    text-align: center;
-}
-
-.totalSum {
-    width: calc(100% - 40px);
-    height: 30px;
-    text-align: center;
-    display: block;
-    padding: 20px;
-}
-
-.cart-img {
-    width: 40px;
-    height: 40px;
-    margin: 5px;
-}
-
-.cart-sum {
-    margin: 20px;
-    text-align: right;
+    top: 15px;
+    right: 20px;
+    justify-content: center;
 }
 
 .cart-inner {
@@ -95,22 +70,12 @@ button:focus {
     padding: 10px;
 }
 
-.cart-close {
-    width: 20px;
-    height: 20px;
-    font-size: 18px;
-    line-height: 20px;
-    position: absolute;
-    top: -7px;
-    right: -7px;
-    border-radius: 50%;
-    background-color: gray;
-    color: white;
-    text-align: center;
+.cart-sum {
+    margin-top: 10px;
 }
 
 .goods-list {
-    display: flex;   
+    display: flex;
     flex-wrap: wrap;
     padding: 0 20px;
 }
@@ -123,11 +88,6 @@ button:focus {
     border-radius: 5px;
     overflow: hidden;
     margin: 20px;
-}
-
-.desc {
-    border: 1px solid #c0c0c040;
-    padding: 15px
 }
 
 p {
@@ -152,4 +112,3 @@ p {
     color: #4A708B;
     border: 1px solid #4A708B;
 }
-

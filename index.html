@@ -8,7 +8,6 @@
     <title>eShop</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
-    <!--    <link rel="stylesheet" href="widgets/chat/style.css">-->
 </head>
 
 <body>
@@ -20,26 +19,32 @@
                         <input type="text" class="search-input" v-model="searchLine">
                         <button class="btn-search" type="submit">Искать</button>
                     </form>
+                     <div class="cart-block">
+                        <button class="cart-button" @click="showCart(itemCart)">Корзина</button>
+                        <div class="cart" v-show="visibility">
+                            <div class="empty" v-if="itemCart.products.length === 0">Ваша корзина пуста.</div>
+                            <div class="cart-item" v-else v-for="good in itemCart.products">
+                                <h3 class="good_title">{{ good.product_name }}</h3>
+                                <p class="good_price">{{ good.price }}</p>
+                                <button class="goods-dec" @click="decCount(good)">-</button>
+                                <span class="goods-count">{{ good.count }}</span>
+                                <button class="goods-inc" @click="incCount(good)">+</button>
+                            </div>
+                            <div class="cart-sum">ИТОГО: {{cartSumm}} ₽</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="header-inner"><button class="cart-button">Корзина</button></div>
+           
             </header>
 
             <main>
                 <div class="goods-list">
                     <div class="goods-item" v-for="good in filteredGoods" :key="good.id_product">
-                        <img :src="goodPicture" alt="img" class="goods-img">
+                        <img src="img/comp.jpg" alt="img" class="goods-img">
                         <h3>{{ good.product_name }}</h3>
-                        <p>{{ good.price }}</p>
-                    </div>
-
-                    <div class="cart-bck hidden">
-                        <div class="cart">
-                            <a href="#">
-                                <div class="cart-close">&#10006;</div>
-                            </a>
-                            <div class="cart-inner"></div>
-                        </div>
-                    </div>
+                        <p>{{ good.price }}</p>                        
+                        <button class="goods-btn" @click="addProduct(good)"> Добавить</button>
+                    </div>             
                 </div>
             </main>
         </div>

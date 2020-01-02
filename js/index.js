@@ -4,9 +4,32 @@ const app = new Vue({
     data: {
         goods: [],
         filteredGoods: [],
+        itemsFiltered: [],
         searchLine: '',
-        goodPicture: 'img/comp.jpg'
+        visibility: false,
+        itemCart: {
+            amount: 0,
+            countItems: 0,
+            products: []
+        }
+
     },
+
+    computed: {
+        listItems() {
+            if (!this.searchLine) {
+                return this.itemsFiltered;
+            }
+            return this.filteredGoods;
+        },
+        cartSumm() {
+        let csum = 0;
+        this.itemCart.products.forEach(elem => csum += elem.price * elem.count);
+        return csum;
+    },
+
+    },
+
     methods: {
         makeGETRequest(url) {
             return new Promise((resolve, reject) => {
@@ -30,7 +53,9 @@ const app = new Vue({
                 xhr.onerror = function (err) {
                     reject(err);
                 };
-                xhr.onerror = (err) => {reject(err)};
+                xhr.onerror = (err) => {
+                    reject(err)
+                };
                 xhr.open('GET', url);
                 xhr.send();
             });
@@ -39,7 +64,37 @@ const app = new Vue({
         filterGoods() {
             const regxp = new RegExp(this.searchLine, 'i');
             this.filteredGoods = this.goods.filter((good) => regxp.test(good.product_name));
-        }
+        },
+
+        showCart() {
+            this.visibility = !this.visibility;
+        },
+        addProduct(good) {
+            let findProduct = this.itemCart.products.find(item => item.id_product === good.id_product);
+            if (!findProduct) {
+                this.itemCart.products.push(Object.assign({}, good, {
+                    count: 1
+                }));
+                good.count = 1;
+                this.visibility = true;
+            } else {
+                findProduct.count++;
+            }
+        },
+        decCount(good) {
+            if (good.count === 1) {
+                this.itemCart.products.splice(this.itemCart.products.indexOf(good), 1);
+                if (this.itemCart.products.length === 0) {
+                    this.visibility = !this.visibility;
+                }
+            } else {
+                good.count--;
+            }
+        },
+        incCount(good) {
+            good.count++;
+        },
+
 
     },
 
@@ -51,7 +106,6 @@ const app = new Vue({
         } catch (e) {
             console.error(e);
         }
-    }
-
-
+    },
+    
 });
