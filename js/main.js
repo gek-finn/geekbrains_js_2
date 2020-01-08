@@ -26,37 +26,46 @@ Vue.component('cart', {
       this.isVisibleCart = !this.isVisibleCart;
     },
     
-    decCount(good) {
-      if (good.count === 1) {
-        this.cart.splice(this.cart.indexOf(good), 1);
-        if (this.cart.length === 0) {
-          this.isVisibleCart = !this.isVisibleCart;
-        }
-      } else {
-        good.count--;
+    decCount(idProd) {
+      const goodPos = this.findGoodPos(idProd);
+      if (this.cart[goodPos].count > 0) {
+          this.cart[goodPos].count--;
       }
-    },
-    incCount(good) {
-      good.count++;
-    },
-    
+      if (this.cart[goodPos].count === 0){
+          this.cart.splice(goodPos, 1);
+      }
   },
+    incCount(idProd) {
+      this.cart[this.findGoodPos(idProd)].count++;
+    },
+    findGoodPos(id_product){
+      
+      let goodIdx = -1;
+      this.cart.forEach((item, index) => {
+          if (item.id_product == id_product) {
+              goodIdx = index;
+          }
+      });
+      return goodIdx;
+  },
+  
+},   
   computed: {
     cartSumm() {
       let csum = 0;
       this.cart.forEach(elem => csum += elem.price * elem.count);
       return csum;
-    },   
-
+    },
+    
   },
   template: `
       <div class="cart-block" v-if="isVisibleCart">        
-          <div class="cart-item" v-for = "good in cart">
+          <div class="cart-item" v-for = "good in cart" :key="good.id_product">
             <h3>{{good.product_name}}</h3>
             <p class="good-price">{{ good.price }}</p>
-            <button class="goods-dec" @click="decCount(good)">-</button>
+            <button class="goods-dec" @click="decCount(good.id_product)">-</button>
             <span class="goods-count">{{ good.count }}</span>
-            <button class="goods-inc" @click="incCount(good)">+</button>
+            <button class="goods-inc" @click="incCount(good.id_product)">+</button>
           </div>
           <div class="cart-sum">ИТОГО: {{cartSumm}} ₽</div>
       </div>
@@ -67,24 +76,28 @@ Vue.component('goods-item', {
   props: ['good'],
   methods: {
     addGoodToCart(good) {
-      let goodPos = this.findGoodPos(good.id_product);
+      let goodPos = this.findGoodPos(good.product_name);
       if ( goodPos >= 0){
           cart[goodPos].count++;
-      } else {          
+      } else {
           const cartItem = Object.assign({}, good, {count: 1});
           cart.push(cartItem);
       }
+      this.$emit('add-good-to-cart', good);
   },
-  findGoodPos(id_product){
-    
-    let goodIdx = -1;
-    cart.forEach((item, index) => {
-        if (item.id_product == id_product) {
-            goodIdx = index;
-        }
-    });
-    return goodIdx;
-},
+  findGoodPos(product_name){
+      
+      let goodIdx = -1;
+      
+      cart.forEach((item, index) => {
+
+          if (item.product_name === product_name) {
+              goodIdx = index;
+          }
+      });
+      return goodIdx;
+  },
+  
   },
   template: `
     <div class="goods-item">
@@ -98,6 +111,11 @@ Vue.component('goods-item', {
 
 Vue.component('goods-list', {
   props: ['goods'],
+  methods: {
+    addGoodToCart(good){
+       this.$emit('add-good-to-cart', good);
+    }
+},
   computed: {
     isGoodsEmpty() {
       return this.goods.length === 0;
@@ -105,7 +123,8 @@ Vue.component('goods-list', {
   },
   template: `
     <div class="goods-list" v-if="!isGoodsEmpty">
-      <goods-item v-for="good in goods" :good="good" :key="good.id_product"></goods-item>
+      <goods-item v-for="good in goods" :good="good"
+      @add-good-to-cart="addGoodToCart" :key="good.product_name"></goods-item>
     </div>
     <div class="not-found-items" v-else>
       <h2>Нет данных</h2>
@@ -164,12 +183,13 @@ const app = new Vue({
 
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              const body = JSON.parse(xhr.responseText);
-              resolve(body)
-            } else {
-              reject(xhr.responseText);
-            }
+            // if (xhr.status === 200) {
+            //   const body = JSON.parse(xhr.responseText);
+            //   resolve(body)
+            // } else {
+            //   reject(xhr.responseText);
+            // }
+            resolve(xhr.responseText);
           }
         };
         xhr.onerror = function (err) {
@@ -178,9 +198,20 @@ const app = new Vue({
 
         xhr.open('POST', url);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        xhr.send(data);
+        xhr.send(JSON.stringify(data));
       });
     },
+
+    async addGoodToCart(good) {
+      await this.makePOSTRequest('/cartAdd', good);
+     // cart.push(good);
+
+    },
+    async removeGoodFromCart(good){
+      await this.makePOSTRequest('/cartDel', good);
+      
+  },
+  
     toggleCartVisibility() {
       this.$refs.cart.toggleVisibility();
     },
@@ -192,11 +223,15 @@ const app = new Vue({
       return this.goods.filter((good) => regexp.test(good.product_name));
     },
   },
-  async mounted() {
-    try {
-      this.goods = await this.makeGETRequest(`/catalog`);
-    } catch (e) {
-      console.error(e);
-    }
+  mounted() {
+    Promise.all ([
+      this.makeGETRequest(`/catalog`),
+      this.makeGETRequest(`/cart`)
+    ]).then(([catalogData,cartData]) => {
+      this.goods=catalogData;
+      cart.push(...cartData);
+    }).catch (() => {
+      this.setError('Товары не найдены');
+    })
   }
 });

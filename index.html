@@ -19,7 +19,7 @@
     </div>
   </header>
   <main>
-    <goods-list :goods="filteredGoods"></goods-list>
+    <goods-list :goods="filteredGoods" @add-good-to-cart="addGoodToCart"></goods-list>
   </main>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
